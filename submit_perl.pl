@@ -4,7 +4,7 @@ $job_name = 'preproc_AFNI' ;
 $job_output = '/oak/stanford/groups/menon/projects/ruiyuan/test_AFNI_preproc/job/test.%j.out' ;
 $job_error = '/oak/stanford/groups/menon/projects/ruiyuan/test_AFNI_preproc/job/test.%j.err' ;
 $job_time = '02:00:00' ;
-$input_dir = '/oak/stanford/groups/menon/rawdata/public/ABIDE/UCLA_1/' ;
+$input_dir = '/oak/stanford/groups/menon/rawdata/public/' ;
 #$subID = '0051201'    ;
 $output_dir = '/oak/stanford/groups/menon/projects/ruiyuan/test_AFNI_preproc/data/imaging/participants'  ;
 
