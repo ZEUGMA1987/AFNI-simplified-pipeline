@@ -1,22 +1,13 @@
 #! /bin/perl
 
-#$path = "/media/disk2/Russell_Trigeminal/Trigeminal_PROC";
-#chdir "$path";
-#
-#/oak/stanford/groups/menon/rawdata/public/ABIDE/UCLA_1/0051201/session_1/rest_1
-print "$path\n";
-
 print "$ARGV[0]\n";
 print "$ARGV[1]\n";
 print "$ARGV[2]\n";
 
 $input_path = $ARGV[0];
-#/oak/stanford/groups/menon/rawdata/public/ABIDE/UCLA_1/     0051201/session_1/rest_1
-
 $sub = $ARGV[1];
-# 0051201
-
 $output_path = $ARGV[2];
+
 # /oak/stanford/groups/menon/projects/ruiyuan/test_AFNI_preproc/data/imaging/participants
 
 #@list =`ls -d  N23_* N24_* `;
@@ -42,52 +33,17 @@ $output_path = $ARGV[2];
   else
   {
 `rm tmp*`;
-#`rm motion*`;
-#`rm desipike*`;
-#`rm done_rest.nii`;
-#`mv done_rest.nii prev_done_rest.nii`;
-#`mv MPRAGE001.nii MPRAGE.nii`;
-#`mv rfMRI.nii rest.nii`;
+
 
 ############################################################################################
 #      prepocessing for connectivity analysis
 ##############################################################################################
 
- #`gunzip MPRAGE.nii.gz`;
- ##`mv MPRAGE.nii mprage.nii`;
- ##`3dAFNItoNIFTI -prefix mprage.nii mprage+orig`;
- ##`bet2 MPRAGE.nii mprage_noskull.nii`;
- ##`3dresample -orient rpi -prefix re_mprage_noskull.nii -inset mprage_noskull.nii.gz`;
-
- ####### segement mparage.nii into wm csf gm
- ## `fast mparege.nii`;
- 
-
- ## `3dcopy  rest.nii.gz  rest`; 
- #`gunzip rest.nii.gz`;
- ##`3dAFNItoNIFTI -prefix rest.nii rest+orig`;
-  ##`3dresample -master one_rest.nii -prefix tmp_wm.nii -inset c2MPRAGE.nii `;
-  ##`3dresample -master one_rest.nii -prefix tmp_csf.nii -inset c3MPRAGE.nii `;
- 
-############# functional MRI ####################
-#`mv rest.nii rest.nii.gz`;
-#`gunzip rest.nii.gz`;
-#`3drefit -deoblique rest.nii`;
-#`3drefit -orient  rpi  -xorigin_raw  -105  -yorigin_raw 125  -zorigin_raw -59  rest.nii`;`
-
-#`3dresample -orient rpi -prefix tmp_re_rest.nii -inset rest.nii`;
-#`3dresample -orient rpi -prefix MPRAGE_rpi.nii -inset mprage_1.nii`;
- #`3dTstat -mean  -prefix tmp_m_re_rest.nii  tmp_re_rest.nii`;
 $nvols=`3dinfo -nt rest.nii`-1;
 chomp $novls;
 print "$nvols\n";
 `3dTcat -prefix tmp_cut_re_rest.nii rest.nii[5..$nvols]`;
- `3dvolreg -prefix reg_rest.nii -base tmp_cut_re_rest.nii[0]  -fourier -maxdisp1D max_motion.D -twopass -1Dfile motion.D tmp_cut_re_rest.nii`;
-# `3dAutomask -prefix mask_rest.nii reg_rest.nii`;
-# `3dcalc -a mask_rest.nii  -b  reg_rest.nii -expr 'a*b' -prefix noskull_rest`;
-# `3dAFNItoNIFTI -float -prefix noskull_rest.nii  noskull_rest+orig`;
-#  `rm noskull_rest+orig.*`;
-#  `3dTstat -mean  -prefix m_noskull_rest.nii  noskull_rest.nii`;
+`3dvolreg -prefix reg_rest.nii -base tmp_cut_re_rest.nii[0]  -fourier -maxdisp1D max_motion.D -twopass -1Dfile motion.D tmp_cut_re_rest.nii`;
 `3dTstat -mean  -prefix tmp_m_reg_rest.nii  reg_rest.nii`;
 ########## derivative of motion parameter  ##################################################
 
@@ -203,20 +159,15 @@ close (forwardfile);
 
 `3dDeconvolve -input reg_rest.nii -jobs 3 -polort -1 -num_stimts 25 -stim_file 1 motion_1.txt  -stim_label 1 roll  -stim_file 2 motion_2.txt  -stim_label 2 pitch -stim_file 3 motion_3.txt  -stim_label 3 yaw  -stim_file 4 motion_4.txt  -stim_label 4  xx  -stim_file 5 motion_5.txt  -stim_label 5  yy -stim_file 6 motion_6.txt  -stim_label 6  zz -stim_file 7 motion_.1._abs.txt  -stim_label 7 roll_abs -stim_file 8 motion_.2._abs.txt  -stim_label 8 pitch_abs  -stim_file 9 motion_.3._abs.txt  -stim_label 9 yaw_abs  -stim_file 10 motion_.4._abs.txt  -stim_label 10 xx_abs  -stim_file 11 motion_.5._abs.txt  -stim_label 11 yy_abs  -stim_file 12 motion_.6._abs.txt  -stim_label 12 zz_abs  -stim_file 13 motion_fo_1.txt  -stim_label 13 roll_forward -stim_file 14 motion_fo_2.txt  -stim_label 14 pitch_forward  -stim_file 15 motion_fo_3.txt  -stim_label 15 yaw_forward  -stim_file 16 motion_fo_4.txt  -stim_label 16 xx_forward  -stim_file 17 motion_fo_5.txt  -stim_label 17 yy_forward  -stim_file 18 motion_fo_6.txt  -stim_label 18 zz_forward  -stim_file 19  motion_fo_.1._abs.txt  -stim_label 19  roll_forward_abs -stim_file 20  motion_fo_.2._abs.txt  -stim_label 20  pitch_forward_abs  -stim_file 21  motion_fo_.3._abs.txt  -stim_label 21  yaw_forward_abs  -stim_file 22  motion_fo_.4._abs.txt  -stim_label 22  xx_forward_abs  -stim_file 23  motion_fo_.5._abs.txt  -stim_label 23  yy_forward_abs  -stim_file 24  motion_fo_.6._abs.txt  -stim_label 24  zz_forward_abs  -stim_file 25 e.norm.1d  -stim_label 25 derivative   -x1D nuisances  -bucket Decon -x1D_stop `;     
 
-#`3dREMLfit -input tmp_reg_rest.nii -matrix nuisances.xmat.1D  -Rerrts tmp_res4d_rest.nii -GOFORIT`; #-GOFORIT
 `3dTproject -polort 0 -input  reg_rest.nii      -ort nuisances.xmat.1D -prefix tmp_res4d_rest.nii `;
 ############ smoothing #########################################################
 ##-mask mask_rest.nii
 ## -stim_file 7 csf.d -stim_label 7  csf  -stim_file 8 wm.d -stim_label 8  wm
 `3dDespike -prefix tmp_desipike_rest.nii  tmp_res4d_rest.nii`;
-#`3dcalc -a m_reg_rest.nii -b desipike_rest.nii -expr "a+b" -prefix add_mean_desipike_rest.nii`;
 
 #`3dFourier -prefix filt_res4d_rest -lowpass 0.1 -highpass 0.01 -retrend desipike_rest.nii`;
 #`fslmaths  filt_res4d_rest.nii -kernel gauss 2.55 -fmean -mas mask_rest.nii smooth_res4d_rest.nii`;
 
-
-##`3dAFNItoNIFTI -float -prefix filt_res4d_rest.nii.gz filt_res4d_rest+orig`;
-##`3dTstat -prefix mean_res4d_rest.nii -mean res4d_rest.nii`;
 
 ############ Detrend ##############################################################
 
